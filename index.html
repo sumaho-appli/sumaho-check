@@ -113,7 +113,10 @@
   .nav .nx.done{background:#8a8378!important;animation:none}
   @keyframes nudge{0%,100%{transform:translateX(0)}50%{transform:translateX(5px)}}
   .sm{flex:1;border:1px solid var(--line);background:var(--card);border-radius:12px;padding:10px 0;font:inherit;font-size:14px;font-weight:700;color:var(--ink);cursor:pointer}
-  .send{display:block;text-align:center;text-decoration:none;margin-top:9px;background:var(--accent);color:#fff;border-radius:12px;padding:12px 0;font-size:15px;font-weight:800;box-shadow:0 3px 0 rgba(0,0,0,.12)}
+  .send{display:block;width:100%;border:none;font:inherit;cursor:pointer;text-align:center;text-decoration:none;margin-top:9px;background:var(--accent);color:#fff;border-radius:12px;padding:12px 0;font-size:15px;font-weight:800;box-shadow:0 3px 0 rgba(0,0,0,.12)}
+  .send:disabled{opacity:.7;cursor:default}
+  .send.done{background:#e6f2ee;color:var(--sonae);box-shadow:none;font-size:14px}
+  .opinion{display:block;text-align:center;font-size:12px;color:var(--sub);margin-top:6px}
   footer{font-size:10px;color:var(--sub);text-align:center;line-height:1.5;padding-top:6px}
   .toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:var(--ink);color:#fff;font-size:13px;padding:8px 14px;border-radius:99px;opacity:0;transition:.3s;pointer-events:none;white-space:nowrap}
   .toast.show{opacity:1}
@@ -327,6 +330,17 @@ const FORM = {
     post:"768642993", leak:"506667378", consult:"1982992710"
   }
 };
+/* 回答をGoogleフォームに裏側で送信（フォーム画面は開かない） */
+let sent=false;
+function sendAnswers(btn){
+  const url=formUrl(); if(!url) return;
+  btn.disabled=true; btn.textContent="送信中…";
+  const q=url.split("?")[1];
+  const body=new URLSearchParams(q); body.delete("usp");
+  fetch(FORM.base.replace(/viewform$/,"formResponse"),{method:"POST",mode:"no-cors",body})
+    .then(()=>{ sent=true; render(); })
+    .catch(()=>{ btn.disabled=false; btn.textContent="送信できませんでした。もう一度押してください"; });
+}
 function formUrl(){
   if(!FORM.base) return "";
   const p=new URLSearchParams({usp:"pp_url"});
@@ -487,13 +501,16 @@ function card(r,head,part,first,nav){
       ${r.n?`<div class="note">${r.n}</div>`:""}
       ${nav||""}
     </div>
-    ${formUrl()?`<a class="send" href="${formUrl()}" target="_blank" rel="noopener">📮 回答を送る（無記名・送信を押すだけ）</a>`:""}
+    ${formUrl()?(sent
+      ? `<div class="send done">✓ 送信しました。ご協力ありがとうございます</div>
+         <a class="opinion" href="${formUrl()}" target="_blank" rel="noopener">ご意見・わかりにくかった点を書く（任意）</a>`
+      : `<button class="send" onclick="sendAnswers(this)">📮 回答を送る（無記名・ワンタップ）</button>`):""}
     <div class="row"><button class="sm" onclick="restart()">↺ もう一度</button><button class="sm" onclick="share()">🔗 リンクをコピー</button></div>
   </div>`;
 }
 function push(s){path.push(s);render()}
 function pop(){path.pop();render()}
-function restart(){path=[];ans={};render()}
+function restart(){path=[];ans={};sent=false;render()}
 function share(){
   const fail=()=>toast("コピーできませんでした。画面上部のURLを共有してください");
   try{navigator.clipboard.writeText(location.href).then(()=>toast("リンクをコピーしました"),fail)}catch(e){fail()}
