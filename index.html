@@ -115,6 +115,8 @@
   .sm{flex:1;border:1px solid var(--line);background:var(--card);border-radius:12px;padding:10px 0;font:inherit;font-size:14px;font-weight:700;color:var(--ink);cursor:pointer}
   .send{display:block;width:100%;border:none;font:inherit;cursor:pointer;text-align:center;text-decoration:none;margin-top:9px;background:var(--accent);color:#fff;border-radius:12px;padding:12px 0;font-size:15px;font-weight:800;box-shadow:0 3px 0 rgba(0,0,0,.12)}
   .send:disabled{opacity:.7;cursor:default}
+  .send.demo{background:#eee9df;color:var(--sub);box-shadow:none;font-size:13px}
+  .demo-tag{font-size:11px;font-weight:700;color:#fff;background:var(--sub);border-radius:99px;padding:2px 8px;margin-left:6px;vertical-align:middle}
   .send.done{background:#e6f2ee;color:var(--sonae);box-shadow:none;font-size:14px}
   .opinion{display:block;text-align:center;font-size:12px;color:var(--sub);margin-top:6px}
   footer{font-size:10px;color:var(--sub);text-align:center;line-height:1.5;padding-top:6px}
@@ -330,6 +332,8 @@ const FORM = {
     post:"768642993", leak:"506667378", consult:"1982992710"
   }
 };
+/* お試しモード：URLの末尾に ?demo を付けると回答を送信しない（市の担当者などの試用向け） */
+const DEMO = (()=>{ try{ return new URLSearchParams(location.search).has("demo"); }catch(e){ return false; } })();
 /* 回答をGoogleフォームに裏側で送信（フォーム画面は開かない） */
 let sent=false;
 function sendAnswers(btn){
@@ -501,7 +505,7 @@ function card(r,head,part,first,nav){
       ${r.n?`<div class="note">${r.n}</div>`:""}
       ${nav||""}
     </div>
-    ${formUrl()?(sent
+    ${DEMO?`<div class="send demo">お試しモード：回答は送信されません</div>`:formUrl()?(sent
       ? `<div class="send done">✓ 送信しました。ご協力ありがとうございます</div>
          <a class="opinion" href="${formUrl()}" target="_blank" rel="noopener">ご意見・わかりにくかった点を書く（任意）</a>`
       : `<button class="send" onclick="sendAnswers(this)">📮 回答を送る（無記名・ワンタップ）</button>`):""}
@@ -517,6 +521,7 @@ function share(){
 }
 function toast(msg){const t=$("toast");t.textContent=msg;t.classList.add("show");setTimeout(()=>t.classList.remove("show"),2200)}
 setMode("l");
+if(DEMO){ document.querySelector("header h1").insertAdjacentHTML("beforeend",'<span class="demo-tag">お試し</span>'); }
 if("serviceWorker" in navigator){ window.addEventListener("load",()=>navigator.serviceWorker.register("sw.js").catch(()=>{})); }
 </script>
 </body>
