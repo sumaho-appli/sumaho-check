@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#b8432f">
+<meta name="description" content="はい・いいえで答えるだけ。わが家のスマホ・SNSの「守る」「備える」がわかる1分チェック">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="スマホチェック">
+<title>わが家のスマホ・SNS 1分チェック</title>
+<link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@400;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#fbf7f0; --card:#ffffff; --ink:#2b2a28; --sub:#6b665e;
+    --mamoru:#b8432f; --junbi:#5a62a8; --sonae:#2f7d6d; --accent:#f2b134; --line:#e8e1d4; --off:#b3ab9d;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%}
+  body{font-family:"M PLUS Rounded 1c",system-ui,sans-serif;background:var(--bg);color:var(--ink);display:flex;justify-content:center}
+  .app{width:100%;max-width:440px;height:100dvh;display:flex;flex-direction:column;padding:14px 16px 10px}
+  header{display:flex;align-items:center;justify-content:space-between;gap:8px}
+  header h1{font-size:14px;font-weight:800;white-space:nowrap}
+  header h1 span{color:var(--mamoru)}
+  .seg{display:flex;background:#fff;border:1px solid var(--line);border-radius:99px;padding:3px}
+  .seg button{border:none;background:none;font:inherit;font-size:12px;font-weight:700;color:var(--sub);padding:6px 9px;border-radius:99px;cursor:pointer}
+  .seg button.on{background:var(--ink);color:#fff}
+  .bar{height:5px;background:var(--line);border-radius:99px;overflow:hidden;margin-top:10px}
+  .bar i{display:block;height:100%;background:var(--accent);transition:width .3s}
+  main{flex:1;display:flex;flex-direction:column;justify-content:center;min-height:0}
+  .screen{animation:in .35s ease}
+  @keyframes in{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+
+  /* start */
+  .hero{text-align:center}
+  .hero .big{font-size:52px;line-height:1}
+  .pick{font-size:15px;font-weight:800;margin-bottom:8px}
+  .grades{display:flex;gap:8px}
+  .gbtn{flex:1;border:none;border-radius:16px;background:var(--ink);color:#fff;font:inherit;font-size:11px;line-height:1.3;padding:12px 0 10px;cursor:pointer;box-shadow:0 4px 0 rgba(0,0,0,.15)}
+  .gbtn:active{transform:translateY(3px);box-shadow:0 1px 0 rgba(0,0,0,.15)}
+  .gbtn b{display:block;font-size:20px;font-weight:800;margin:2px 0}
+  .gbtn small{font-size:11px;opacity:.75}
+  .pnote{font-size:11px;color:var(--sub);margin-top:10px;line-height:1.5}
+  .who{display:inline-block;margin-top:10px;font-size:12px;font-weight:700;color:#fff;background:var(--ink);border-radius:99px;padding:3px 12px}
+  .hero h2{font-size:23px;font-weight:800;margin:8px 0 14px;line-height:1.4}
+  .parts{display:flex;flex-direction:column;gap:8px;text-align:left;margin-bottom:18px}
+  .part{display:flex;gap:10px;align-items:center;background:#fff;border:1px solid var(--line);border-radius:14px;padding:10px 12px}
+  .part .pl{flex:none;font-size:15px;font-weight:800;color:#fff;border-radius:10px;padding:8px 10px}
+  .part.m .pl{background:var(--mamoru)} .part.s .pl{background:var(--sonae)}
+  .part b{font-size:14px;display:block}
+  .part small{font-size:12px;color:var(--sub);line-height:1.5}
+
+  /* part intro */
+  .intro{text-align:center}
+  .intro .no{font-size:13px;font-weight:700;color:var(--sub)}
+  .intro .ttl{display:inline-block;font-size:34px;font-weight:800;color:#fff;border-radius:18px;padding:10px 28px;margin:10px 0 14px}
+  .intro.m .ttl{background:var(--mamoru)} .intro.s .ttl{background:var(--sonae)}
+  .intro h2{font-size:19px;font-weight:800;line-height:1.5;margin-bottom:10px}
+  .intro p{font-size:14px;color:var(--sub);line-height:1.75;margin-bottom:24px}
+
+  /* question */
+  .qno{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:700;color:var(--sub);margin-bottom:10px}
+  .pill{font-size:11px;font-weight:800;color:#fff;border-radius:99px;padding:3px 9px}
+  .pill.m{background:var(--mamoru)} .pill.s{background:var(--sonae)}
+  .q{font-size:21px;font-weight:800;line-height:1.5}
+  .hint{font-size:13px;color:var(--sub);margin-top:10px;line-height:1.6}
+  .btns{display:flex;gap:12px;margin-top:26px}
+  .btn{flex:1;border:none;border-radius:18px;padding:20px 0;font:inherit;font-size:20px;font-weight:800;color:#fff;cursor:pointer;box-shadow:0 4px 0 rgba(0,0,0,.15);transition:transform .08s}
+  .btn:active{transform:translateY(3px);box-shadow:0 1px 0 rgba(0,0,0,.15)}
+  .btn.y{background:#3a6ea5} .btn.n{background:#8a8378}
+  .btn.go{background:var(--ink);font-size:18px;padding:17px 0;width:100%}
+  .intro.m .btn.go{background:var(--mamoru)} .intro.s .btn.go{background:var(--sonae)}
+  .back{background:none;border:none;font:inherit;font-size:13px;color:var(--sub);margin-top:16px;cursor:pointer;align-self:flex-start}
+
+  /* result */
+  .rows{display:flex;flex-direction:column;gap:6px;margin-bottom:6px}
+  .rrow{display:flex;gap:8px;align-items:flex-start}
+  .rlab{flex:none;width:64px;font-size:12px;font-weight:800;color:#fff;border-radius:8px;padding:4px 0;text-align:center;line-height:1.3}
+  .rlab small{display:block;font-size:11px;font-weight:700;opacity:.9}
+  .rrow.m .rlab{background:var(--mamoru)} .rrow.p .rlab{background:var(--junbi)}
+  .rrow.p .sh.ng{border-color:var(--junbi);color:var(--junbi)} .rrow.p .sh.ng.cur{background:var(--junbi);color:#fff}
+  .res.p{border-top-color:var(--junbi)} .res.p .tag{background:var(--junbi)} .res.p li::before{background:var(--junbi)} .pill.p{background:var(--junbi)} .rrow.s .rlab{background:var(--sonae)}
+  .chips{display:flex;gap:4px;flex-wrap:wrap}
+  .sh{font:inherit;font-size:11px;font-weight:700;border-radius:8px;padding:3px 7px;border:1.5px solid var(--line);background:#fff;color:var(--off)}
+  .sh.ng{cursor:pointer}
+  .rrow.m .sh.ng{border-color:var(--mamoru);color:var(--mamoru)}
+  .rrow.s .sh.ng{border-color:var(--sonae);color:var(--sonae)}
+  .rrow.m .sh.ng.cur{background:var(--mamoru);color:#fff}
+  .rrow.s .sh.ng.cur{background:var(--sonae);color:#fff}
+  .tip{font-size:11px;color:var(--sub);margin:2px 0 8px}
+  .res{background:var(--card);border-radius:18px;border:1px solid var(--line);border-top:5px solid var(--ink);padding:13px 15px 11px}
+  .res.m{border-top-color:var(--mamoru)} .res.s{border-top-color:var(--sonae)}
+  .tag{display:inline-block;font-size:11px;font-weight:700;color:#fff;border-radius:99px;padding:3px 10px;background:var(--accent)}
+  .res.m .tag{background:var(--mamoru)} .res.s .tag{background:var(--sonae)}
+  .res h2{font-size:18px;font-weight:800;line-height:1.45;margin:7px 0 4px}
+  .res .why{font-size:13px;color:var(--sub);line-height:1.55;margin-bottom:8px}
+  .res .lead{font-size:12px;font-weight:800;margin-bottom:5px}
+  .res ol{list-style:none;counter-reset:n;display:flex;flex-direction:column;gap:6px}
+  .res li{counter-increment:n;font-size:14px;line-height:1.5;display:flex;gap:9px;align-items:flex-start}
+  .res li::before{content:counter(n);flex:none;width:20px;height:20px;border-radius:50%;background:var(--ink);color:#fff;font-size:12px;font-weight:800;display:flex;align-items:center;justify-content:center;margin-top:1px}
+  .res.m li::before{background:var(--mamoru)} .res.s li::before{background:var(--sonae)}
+  .res .note{margin-top:9px;font-size:12px;background:#fdf1e7;border-radius:10px;padding:6px 10px;line-height:1.55;color:#7a4a2f}
+  .row{display:flex;gap:10px;margin-top:9px}
+  .nav{display:flex;align-items:center;gap:8px;margin-top:11px;padding-top:10px;border-top:1px dashed var(--line)}
+  .nav button{font:inherit;font-weight:800;border:none;border-radius:12px;cursor:pointer}
+  .nav .pv{width:42px;padding:11px 0;background:#f1ece3;color:var(--ink);font-size:16px}
+  .nav .pv:disabled{opacity:.35;cursor:default}
+  .nav .cnt{font-size:12px;font-weight:700;color:var(--sub);white-space:nowrap}
+  .nav .nx{flex:1;padding:12px 6px;font-size:14px;color:#fff;background:var(--ink);box-shadow:0 3px 0 rgba(0,0,0,.15);animation:nudge 1.6s ease-in-out 1s 2}
+  .res.m .nav .nx{background:var(--mamoru)} .res.s .nav .nx{background:var(--sonae)} .res.p .nav .nx{background:var(--junbi)}
+  .nav .nx.done{background:#8a8378!important;animation:none}
+  @keyframes nudge{0%,100%{transform:translateX(0)}50%{transform:translateX(5px)}}
+  .sm{flex:1;border:1px solid var(--line);background:var(--card);border-radius:12px;padding:10px 0;font:inherit;font-size:14px;font-weight:700;color:var(--ink);cursor:pointer}
+  .send{display:block;text-align:center;text-decoration:none;margin-top:9px;background:var(--accent);color:#fff;border-radius:12px;padding:12px 0;font-size:15px;font-weight:800;box-shadow:0 3px 0 rgba(0,0,0,.12)}
+  footer{font-size:10px;color:var(--sub);text-align:center;line-height:1.5;padding-top:6px}
+  .toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:var(--ink);color:#fff;font-size:13px;padding:8px 14px;border-radius:99px;opacity:0;transition:.3s;pointer-events:none;white-space:nowrap}
+  .toast.show{opacity:1}
+</style>
+</head>
+<body>
+<div class="app">
+  <header>
+    <h1>わが家の<span>スマホ</span>チェック</h1>
+  </header>
+  <div class="bar"><i id="bar" style="width:0"></i></div>
+  <main id="main"></main>
+  <footer>参考：宗像市教育委員会「児童生徒の携帯電話等の利用に関する指針」</footer>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+/* =========================================================
+   2つの階層
+   m = 守る：絶対に起きてはいけない → 大人が決めて、必ず実施する
+   s = 備える：起こりうる → 家族で話し合って、対応を決めておく
+   ========================================================= */
+const PART = {
+  m:{name:"守る",sub:"大人が必ずやること",
+     h:"ここは、話し合いではなく大人が決めること",
+     p:"犯罪や大きな被害につながることは、<br>子どもの判断に任せず、<br>大人の責任で先に手を打ちます。",
+     yes:"できている",no:"まだ"},
+  s:{name:"備える",sub:"家族で話し合っておくこと",
+     h:"ここは、子どもと一緒に決めること",
+     p:"どの家庭でも起こりうるトラブルです。<br>「もし起きたらどうする？」を<br>前もって親子で話しておきます。",
+     yes:"話している",no:"まだ"}
+};
+
+/* ---------------- 共通の項目 ---------------- */
+const COMMON = {
+  billing:{part:"m",s:"課金の承認",t:"アプリやゲームでお金を使うとき、保護者の承認が必要な設定にしていますか？",h:"iPhoneの「承認と購入のリクエスト」など",
+    adv:{tag:"課金の管理",t:"課金は「親の承認なし」ではできない設定に",w:"高額請求のトラブルは、設定ひとつで防げます。",lead:"今日やること",
+      a:["iPhoneは「ファミリー共有」の「承認と購入のリクエスト」をオンに","Androidは Google Play の「購入時の承認」を設定","保護者のクレジットカードを子どもの端末に登録しない"],n:""}},
+  night:{part:"m",s:"夜は持ち込まない",t:"夜は、スマホを子ども部屋（寝室）に持ち込ませないようにしていますか？",h:"充電場所をリビングにする、など",
+    adv:{tag:"場所と時間のシールド",t:"夜のスマホは「リビングでおやすみ」に",w:"深夜の利用は、睡眠不足や昼夜逆転、夜間のトラブルにつながります。",lead:"今日やること",
+      a:["充電器をリビングに置き、夜はそこに戻す","「夜10時以降は自分の部屋に持ち込まない」を家の決まりにする","大人のスマホも一緒にリビングで充電する"],n:""}},
+  consult:{part:"s",s:"相談できる大人",t:"親に言いにくいとき、ほかに相談できる大人を決めていますか？",h:"担任の先生、祖父母、親戚など",
+    adv:{tag:"もしもの備え",t:"親以外の「相談できる大人」を決めておく",w:"親には言いにくいこともあります。逃げ道があることが大切です。",lead:"話し合いのヒント",
+      a:["「お父さん・お母さんに言いにくいときは誰に話す？」と聞く","担任の先生、祖父母など、具体的な名前を一緒に挙げる","「その人に先に話しても怒らない」と約束する"],n:""}}
+};
+
+/* ---------------- 小学生 ---------------- */
+const ELEM = {
+  label:"小学校高学年の保護者向け",
+  planKey:"plan",
+  q1:{t:"お子さんは、自分専用のスマホを持っていますか？",h:"タブレットやゲーム機で、動画・ゲーム・チャットを自由に使っている場合も「はい」"},
+  q1b:{t:"中学生までに、スマホを持たせる予定はありますか？",h:"まだ決めていない場合も「はい」"},
+  items:[
+    {k:"filter",part:"m",s:"フィルタリング",t:"フィルタリングや利用時間の制限を設定していますか？",h:"よくわからない場合は「まだ」",
+      adv:{tag:"技術のシールド",t:"今日、フィルタリングを設定してください",w:"危険なサイトや見知らぬ大人との接触は、子どもの注意だけでは防げません。",lead:"今日やること",
+        a:["契約した携帯会社のフィルタリングが有効か確認する","iPhoneは「スクリーンタイム」、Androidは「ファミリーリンク」を設定","相談ではなく「あなたを守るため」と理由を伝えて設定する"],
+        n:"指針：小学生には必ずフィルタリングとスクリーンタイムを設定し、定期的に親が確認する。"}},
+    {k:"billing",...COMMON.billing},
+    {k:"night",...COMMON.night},
+    {k:"apps",part:"m",s:"アプリは許可制",t:"お子さんが使うアプリは、保護者が把握・許可したものだけですか？",h:"LINE・YouTube・ゲームのチャット機能なども含みます",
+      adv:{tag:"13歳の壁",t:"アプリは「親の許可制」に",w:"LINE・Instagram・TikTok・YouTubeは、本来13歳以上が利用規約の前提です。",lead:"今日やること",
+        a:["新しいアプリは、保護者が許可してから入れる","知らない人とやりとりできる設定をオフにする","ときどき子どもの画面を一緒に見る"],
+        n:"小学生に使わせる場合は、規約の前提を外れていると理解したうえで、保護者の管理が条件です。"}},
+    {k:"ng",part:"m",s:"絶対ダメの約束",t:"「これだけは絶対ダメ」を、お子さんにはっきり伝えていますか？",h:"写真を送らない・知らない人と会わない、など",
+      adv:{tag:"防犯のシールド",t:"「絶対ダメ」は、理由とセットで伝えましょう",w:"犯罪につながることは、話し合いではなく大人が決めて伝えます。",lead:"今日伝えること",
+        a:["自分の写真は、誰に頼まれても送らない","名前・学校・住所を、ネットで教えない","ネットで知り合った人とは、会わない"],
+        n:"知らない大人から写真を求められるのは、子ども同士のけんかではなく「犯罪」です。"}},
+    {k:"help",part:"m",s:"叱らない約束",t:"「困ったことがあったら、叱らずに助けるよ」と伝えていますか？",h:"はっきり言葉にして伝えたことがあれば「できている」",
+      adv:{tag:"叱らない約束",t:"「叱らない約束」で、隠さない子に",w:"困ったことが起きたとき、子どもは「怒られる」と思うと隠してしまいます。",lead:"今日伝えること",
+        a:["「何があっても、まず助ける」と言葉で伝える","ルールを破って起きたことでも、まず助けてから話す","打ち明けてくれたら「話してくれてありがとう」"],n:""}},
+    {k:"time",part:"s",s:"時間のルール",t:"使う時間のルールを、お子さんと一緒に決めていますか？",h:"例：夜○時まで、宿題が終わってから",
+      adv:{tag:"時間のルール",t:"時間のルールは、子どもと一緒に決めましょう",w:"押し付けたルールより、自分で決めたルールの方が守れます。",lead:"話し合いのヒント",
+        a:["「何時までならいいと思う？」と、まず子どもに聞く","決めたら紙に書いて、見える場所に貼る","1か月後に「見直す日」を決めておく"],n:""}},
+    {k:"group",part:"s",s:"仲間外れ・悪口",t:"もし、グループLINEやゲームで仲間外れや悪口があったら？　どうするか話していますか？",h:"",
+      adv:{tag:"もしもの備え",t:"「仲間外れにされたら？」を話しておきましょう",w:"起きてからでは、子どもは混乱して一人で抱え込みがちです。",lead:"話し合いのヒント",
+        a:["「もしそうなったら、どうする？」と、まず子どもに聞く","わが家の答えの例：言い返さない・画面を残す・すぐ大人に見せる","「自分が悪口に加わりそうになったら？」も一緒に考える"],n:""}},
+    {k:"stranger",part:"s",s:"知らない人から連絡",t:"もし、知らない人からメッセージが来たら？　どうするか話していますか？",h:"ゲームのチャットも含みます",
+      adv:{tag:"もしもの備え",t:"「知らない人から連絡が来たら？」",w:"相手は、子どもに優しく近づいてきます。",lead:"話し合いのヒント",
+        a:["「優しくても、会ったことのない人は知らない人」と確認する","わが家の答えの例：返事をしない・すぐ親に見せる","ブロックのしかたを、一緒に練習しておく"],n:""}},
+    {k:"consult",...COMMON.consult}
+  ],
+  nophone:{
+    yes:{tag:"持たせる前のご家庭へ",t:"「渡す前」が、いちばんのチャンスです",w:"ルールは後から足すより、最初に決めておく方がずっと守りやすくなります。",lead:"渡す前にやること",
+      a:["【守る】フィルタリングと課金の承認を設定してから手渡す","【守る】「写真を送らない・知らない人と会わない」を先に伝える","【備える】使う時間のルールを、親子で一緒に決める"],
+      n:"小学6年生のスマホ所持率は96%。「うちはまだ」の今が準備期間です。"},
+    no:{tag:"まだ持っていないご家庭へ",t:"今のうちに「大人の姿」から始めましょう",w:"子どもは、大人のスマホの使い方をよく見ています。",lead:"今できること",
+      a:["食事中・会話中は、大人もスマホを置く","家族共用のタブレットやゲーム機にも、フィルタリングを","「いつ・どんな条件で持たせるか」を家族で話しておく"],
+      n:"中学3年生のスマホ所持率は99%。いずれ必ず来る日に向けて。"}
+  }
+};
+
+/* ---------------- 中学生 ---------------- */
+const JUNIOR = {
+  label:"中学生の保護者向け",
+  planKey:"plan",
+  q1:{t:"お子さんは、自分専用のスマホを持っていますか？",h:"タブレットなどでSNSを自由に使っている場合も「はい」"},
+  q1b:{t:"中学生のうちに、スマホを持たせる予定はありますか？",h:"まだ決めていない場合も「はい」"},
+  items:[
+    {k:"filter",part:"m",s:"フィルタリング",t:"フィルタリングを設定していますか？",h:"中学生でも、少なくとも危険なサイトを防ぐ設定は必要です",
+      adv:{tag:"技術のシールド",t:"フィルタリングは、中学生にも必要です",w:"行動範囲が広がる分、危険なサイトや見知らぬ大人との接点も増えます。",lead:"今日やること",
+        a:["契約した携帯会社のフィルタリングが有効か確認する","制限をゆるめるときは、本人と話して段階的に","外すのは「自分で判断できる」と親が確信してから"],n:""}},
+    {k:"billing",...COMMON.billing},
+    {k:"night",...COMMON.night},
+    {k:"ng",part:"m",s:"絶対ダメの約束",t:"「これだけは絶対ダメ」を、お子さんにはっきり伝えていますか？",h:"写真を送らない・SNSで知り合った人と会わない、など",
+      adv:{tag:"防犯のシールド",t:"「絶対ダメ」は、中学生にもはっきりと",w:"犯罪につながることは、話し合いではなく大人が決めて伝えます。",lead:"今日伝えること",
+        a:["自分の写真は、誰に頼まれても送らない","SNSで知り合った人とは、会わない","人の写真や個人情報を、勝手に載せない"],
+        n:"自画撮り画像の要求は、学校内の問題ではなく「犯罪」です。"}},
+    {k:"help",part:"m",s:"叱らない約束",t:"「困ったことがあったら、叱らずに助けるよ」と伝えていますか？",h:"中学生になってからも、言葉にして伝えていれば「できている」",
+      adv:{tag:"叱らない約束",t:"「叱らない約束」が、最後の守りになります",w:"深刻なトラブルほど、子どもは隠します。中学生になると、なおさらです。",lead:"今日伝えること",
+        a:["改めて「何があっても、まず助ける」と言葉で伝える","ルールを破って起きたことでも、まず助けてから話す","打ち明けてくれたら「話してくれてありがとう」"],
+        n:"中学生会議 共同宣言③「保護者とルールを決めて困ったらすぐに相談しよう」"}},
+    {k:"time",part:"s",s:"使い方の決め方",t:"スマホの使い方（時間・場所）を、お子さん自身が考えて決めていますか？",h:"親が決めて伝えただけなら「まだ」",
+      adv:{tag:"自己規律",t:"使い方は「本人が決める」段階へ",w:"中学生は、自分で決めたことでなければ守りません。親は見守り役に。",lead:"話し合いのヒント",
+        a:["「どう使うのが自分にとっていい？」と本人に考えてもらう","決めたことを紙に書き、家族に宣言してもらう","守れなかったときは責めず、「どうする？」と一緒に考える"],
+        n:"中学生会議 共同宣言①「使う時間と場所を身の回りの人と考え、健康で規則正しい生活を送ろう」"}},
+    {k:"post",part:"s",s:"投稿の約束",t:"SNSに書き込む・写真を載せる前に、気をつけることを話していますか？",h:"悪口・友だちの写真・個人情報など",
+      adv:{tag:"言葉と個人情報",t:"送る前に「ひと呼吸」を話しておきましょう",w:"中学生のSNSトラブルの多くは、悪口・なりすまし・写真の無断投稿から始まります。",lead:"話し合いのヒント",
+        a:["「相手が目の前にいても言える？」を合言葉にする","自分や友だちの写真・学校名・住所は載せない","迷ったら送らない、と決めておく"],
+        n:"中学生会議 共同宣言②「相手がいることを意識して、言葉の使い方や個人情報の取扱いに気を付けよう」"}},
+    {k:"group",part:"s",s:"仲間外れ・悪口",t:"もし、グループLINEで仲間外れや悪口があったら？　どうするか話していますか？",h:"",
+      adv:{tag:"もしもの備え",t:"「グループでもめたら？」を話しておきましょう",w:"子どもは「親に言うと大ごとになる」と思って、一人で抱え込みがちです。",lead:"話し合いのヒント",
+        a:["「もしそうなったら、どうする？」と、まず子どもに聞く","わが家の答えの例：言い返さない・画面を残す・大人に見せる","「自分が加わりそうになったら？」も一緒に考える"],n:""}},
+    {k:"leak",part:"s",s:"写真をさらされたら",t:"もし、自分や友だちの写真がさらされたら？　どうするか話していますか？",h:"スクショの拡散なども含みます",
+      adv:{tag:"もしもの備え",t:"「写真をさらされたら？」を話しておきましょう",w:"スクショは一瞬で広がります。慌てて動くと、かえって広がることもあります。",lead:"話し合いのヒント",
+        a:["わが家の答えの例：画面を残して、すぐ大人に相談","回ってきても、自分は広げない（止める側になる）","削除をお願いする方法を、一緒に調べておく"],n:""}},
+    {k:"consult",...COMMON.consult}
+  ],
+  nophone:{
+    yes:{tag:"持たせる前のご家庭へ",t:"「渡す前」が、いちばんのチャンスです",w:"ルールは後から足すより、最初に決めておく方がずっと守りやすくなります。",lead:"渡す前にやること",
+      a:["【守る】フィルタリングと課金の承認を設定してから手渡す","【守る】「写真を送らない・SNSで知り合った人と会わない」を先に伝える","【備える】使い方のルールを、本人に考えてもらう"],
+      n:"中学3年生のスマホ所持率は99%。持つ前の今が準備期間です。"},
+    no:{tag:"持たせない方針のご家庭へ",t:"「持っていない」ことで困っていないか、話してみましょう",w:"連絡がSNS中心になり、友だち関係で困っていることもあります。",lead:"今できること",
+      a:["友だちとの連絡で困っていないか、さりげなく聞く","持たせる時期と条件を、本人と話しておく","家族共用の端末にも、フィルタリングを"],n:""}
+  }
+};
+
+/* ---------------- 低学年 ---------------- */
+const LOWER = {
+  label:"小学校低学年の保護者向け",
+  planKey:"lend",
+  q1:{t:"お子さんが自分で使う、ネットにつながる機器はありますか？",h:"タブレット・ゲーム機・キッズスマホなど。学校の学習用端末は除きます"},
+  q1b:{t:"保護者のスマホやタブレットを、お子さんに貸すことはありますか？",h:"動画を見せる、ゲームをさせる、など"},
+  items:[
+    {k:"filter",part:"m",s:"見守り設定",t:"タブレットやゲーム機に、見守り設定（フィルタリング・時間制限）をしていますか？",h:"よくわからない場合は「まだ」",
+      adv:{tag:"技術のシールド",t:"機器ごとに「見守り設定」をしましょう",w:"低学年の子どもは、危ない画面を自分で避けることができません。",lead:"今日やること",
+        a:["iPadは「スクリーンタイム」、Androidは「ファミリーリンク」を設定","Switchなどのゲーム機は「みまもり設定」（保護者向けアプリ）を設定","YouTubeは「YouTube Kids」に切り替える"],n:""}},
+    {k:"billing",part:"m",s:"課金の承認",t:"アプリやゲームでお金を使うとき、保護者の承認が必要な設定にしていますか？",h:"ゲーム機の購入制限も含みます",
+      adv:{tag:"課金の管理",t:"課金は「親の承認なし」ではできない設定に",w:"子どもは、ボタン一つでお金がかかることを知らないまま押してしまいます。",lead:"今日やること",
+        a:["iPhone・iPadは「承認と購入のリクエスト」をオンに","ゲーム機は、見守り設定で購入を制限する","保護者のクレジットカードを登録したまま渡さない"],n:""}},
+    {k:"night",part:"m",s:"夜は持ち込まない",t:"夜は、タブレットやゲーム機を寝室に持ち込ませないようにしていますか？",h:"",
+      adv:{tag:"場所と時間のシールド",t:"夜の機器は「リビングでおやすみ」に",w:"寝る前の画面は、寝つきの悪さや睡眠不足につながります。",lead:"今日やること",
+        a:["機器の置き場所・充電場所をリビングに決める","「寝る1時間前には片づける」を家の決まりにする","大人のスマホも一緒にリビングに置く"],n:""}},
+    {k:"watch",part:"m",s:"動画・ゲームを把握",t:"お子さんが見ている動画や、遊んでいるゲームを保護者が把握していますか？",h:"だいたいでも分かっていれば「はい」",
+      adv:{tag:"見守り",t:"何を見て、何で遊んでいるかを知りましょう",w:"動画の自動再生や、ゲームの中のチャットから、思わぬものに出会うことがあります。",lead:"今日やること",
+        a:["ときどき一緒に見る、一緒に遊ぶ","動画の自動再生をオフにする","ゲームで知らない人と話せる機能（チャット）をオフにする"],n:""}},
+    {k:"ng",part:"m",s:"絶対ダメの約束",t:"「名前や学校を、ネットで教えてはいけない」と伝えていますか？",h:"写真を送らない、なども含みます",
+      adv:{tag:"防犯のシールド",t:"「これだけはダメ」を、短い言葉で伝えましょう",w:"低学年のうちから、くり返し伝えることが大切です。",lead:"今日伝えること",
+        a:["名前・学校・家の場所は、ネットで教えない","自分の写真は、誰にも送らない","「会おう」と言われたら、すぐおうちの人に言う"],n:""}},
+    {k:"help",part:"m",s:"叱らない約束",t:"「困ったことがあったら、叱らずに助けるよ」と伝えていますか？",h:"はっきり言葉にして伝えたことがあれば「できている」",
+      adv:{tag:"叱らない約束",t:"「叱らない約束」で、隠さない子に",w:"「怒られる」と思うと、子どもは困ったことを隠してしまいます。",lead:"今日伝えること",
+        a:["「何があっても、まず助ける」と言葉で伝える","約束を破って起きたことでも、まず助けてから話す","打ち明けてくれたら「話してくれてありがとう」"],n:""}},
+    {k:"time",part:"s",s:"時間のルール",t:"使う時間を、お子さんと一緒に決めていますか？",h:"例：1日○分まで、宿題のあと",
+      adv:{tag:"時間のルール",t:"時間のルールは、子どもと一緒に決めましょう",w:"自分で決めたルールの方が、低学年でも守りやすくなります。",lead:"話し合いのヒント",
+        a:["「どのくらいならいいと思う？」と、まず子どもに聞く","キッチンタイマーなど、目に見える形で時間を区切る","守れたら、ほめる"],n:""}},
+    {k:"scary",part:"s",s:"こわい画面を見たら",t:"もし、こわい動画やびっくりする画面を見てしまったら？　どうするか話していますか？",h:"",
+      adv:{tag:"もしもの備え",t:"「こわい画面が出たら？」を話しておきましょう",w:"見てしまったことより、一人で抱えることの方が心配です。",lead:"話し合いのヒント",
+        a:["「もし出てきたら、どうする？」と、まず子どもに聞く","わが家の答えの例：すぐ画面を閉じて、おうちの人を呼ぶ","呼んでくれたら叱らない、と約束する"],n:""}},
+    {k:"stranger",part:"s",s:"知らない人から連絡",t:"もし、ゲームなどで知らない人から話しかけられたら？　どうするか話していますか？",h:"",
+      adv:{tag:"もしもの備え",t:"「知らない人に話しかけられたら？」",w:"ゲームの中の「友だち」が、知らない大人のこともあります。",lead:"話し合いのヒント",
+        a:["「会ったことのない人は、知らない人」と確認する","わが家の答えの例：返事をしない・すぐおうちの人に見せる","道で知らない人に声をかけられたときと同じ、と伝える"],n:""}},
+    {k:"consult",...COMMON.consult}
+  ],
+  nophone:{
+    yes:{tag:"機器を貸しているご家庭へ",t:"貸すときにも「約束」をつけましょう",w:"保護者のスマホには、子ども向けの制限がかかっていないことがほとんどです。",lead:"今できること",
+      a:["貸すときは「何を・何分」を先に決める","子どもが使う間は、YouTube Kidsなど子ども向けのアプリにする","課金ができないよう、購入にパスワードをかけておく"],n:""},
+    no:{tag:"まだ使っていないご家庭へ",t:"今のうちに「大人の姿」から始めましょう",w:"子どもは、大人のスマホの使い方をよく見ています。",lead:"今できること",
+      a:["食事中・会話中は、大人もスマホを置く","「いつ・どんな条件で使わせるか」を家族で話しておく","使い始めるときは、見守り設定をしてから渡す"],n:""}
+  }
+};
+
+/* ---------------- まだ持っていない家庭向け「準備」 ---------------- */
+const PREP = [
+  {k:"interest",score:false,t:"子どものSNS・スマホのトラブルについて、関心がありますか？",h:"ニュースなどで気になったことがあれば「ある」",yl:"ある",nl:"あまりない"},
+  {k:"info",s:"情報を知る",t:"子どものスマホ・SNSのトラブルについて、ニュースや学校のお便りなどで情報を見ていますか？",h:"",
+    adv:{tag:"知る",t:"まずは「知る」ことから始めましょう",w:"トラブルの多くは「知らなかった」から始まります。大人が先に知っておくことが、いちばんの準備です。",lead:"今できること",
+      a:["学校や市から届くお便りに、ひと通り目を通す","子どものトラブルのニュースを見かけたら、家族で話題にする","学校やPTAの研修会・講座があれば参加してみる"],n:""}},
+  {k:"guideline",s:"市の指針",t:"宗像市の「児童生徒の携帯電話等の利用に関する指針」を読んだことがありますか？",h:"学校から配られた「保存版」の資料です",
+    adv:{tag:"市の指針",t:"市の指針に目を通しておきましょう",w:"指針は、学校と家庭の「共通の約束ごと」です。家庭の役割もここに書かれています。",lead:"今できること",
+      a:["学校から配られた指針（保存版）を読む","家庭の役割（機器の管理・家庭のルールづくり）を確認する","中学生会議の「共同宣言」を、親子で一緒に読む"],
+      n:"指針の考え方：一律の禁止ではなく、子ども自身が自分をコントロールする力（自己規律）を育てる。"}},
+  {k:"when",s:"持たせる時期",t:"いつ・どんな条件で持たせるか、家族で話したことがありますか？",h:"「中学生になったら」など、ざっくりでもOK",
+    adv:{tag:"未来の準備",t:"「いつ・どんな条件で」を話しておきましょう",w:"「周りが持っているから」で急に持たせると、ルールが後回しになりがちです。",lead:"今できること",
+      a:["何年生・どんなときに持たせるか、家族の考えをそろえる","持たせる前にやること（見守り設定・約束）を知っておく","「持たせるときは、一緒にルールを決めようね」と子どもに伝えておく"],n:""}},
+  {k:"adult",s:"大人の姿",t:"保護者自身も、食事中や会話中はスマホを置いていますか？",h:"正直にどうぞ（大人もチェック対象です）",
+    adv:{tag:"大人の姿勢",t:"子どもは、大人のスマホを見ています",w:"持つ前から、子どもは大人の使い方をまねしています。",lead:"今できること",
+      a:["食事中・会話中は、大人もスマホを置く","話しかけられたら手を止めて、目を見て聞く","家族で「ノーメディアデー」に挑戦してみる"],n:""}}
+];
+const prepScored=()=>PREP.filter(x=>x.score!==false);
+
+/* ================= 回答の送信（Googleフォーム事前入力） =================
+   FORM.base にフォームの viewform のURL、FORM.entry に各質問の entry 番号を入れる。
+   base が空のあいだは、送信ボタンを出さない。 */
+const FORM = {
+  base:"https://docs.google.com/forms/d/e/1FAIpQLSc3XIjfM900XYpDYsE8QO0zgvzbLmdBXtijDyPckxbkl19UJA/viewform",
+  entry:{
+    mode:"794325398", own:"2064253868", plan:"1619862304", lend:"1532163773",
+    interest:"2129949854", info:"1710792073", guideline:"194491583", when:"188924526", adult:"240661248",
+    filter:"1000383614", billing:"1146618751", night:"492420556", apps:"1379827274", watch:"1750398903",
+    ng:"1520306739", help:"1412747094",
+    time:"298471210", group:"1241479261", stranger:"1843394607", scary:"317230953",
+    post:"768642993", leak:"506667378", consult:"1982992710"
+  }
+};
+function formUrl(){
+  if(!FORM.base) return "";
+  const p=new URLSearchParams({usp:"pp_url"});
+  const set=(k,v)=>{ if(FORM.entry[k]) p.append("entry."+FORM.entry[k],v); };
+  set("mode", {l:"低学年",e:"高学年",j:"中学生"}[mode]);
+  if("np" in ans){
+    set("own","持っていない"); set(D().planKey, ans.np?"ある":"ない");
+    PREP.forEach(x=>{ if(x.k in ans) set(x.k, x.score===false ? (ans[x.k]?"ある":"あまりない") : (ans[x.k]?"はい":"まだ")); });
+  }
+  else{
+    set("own","持っている");
+    D().items.forEach(x=>{ if(x.k in ans) set(x.k, ans[x.k]?"はい":"まだ"); });
+  }
+  return FORM.base+"?"+p.toString();
+}
+
+/* ================= 動作 ================= */
+const $=id=>document.getElementById(id);
+let mode="l", path=[], ans={};
+const D=()=>({l:LOWER,e:ELEM,j:JUNIOR})[mode];
+const ofPart=p=>D().items.filter(x=>x.part===p);
+/* 出題順：守る → 備える */
+const seq=()=>[{v:"intro",p:"m"},...ofPart("m").map(x=>({v:"q",k:x.k})),{v:"intro",p:"s"},...ofPart("s").map(x=>({v:"q",k:x.k})),{v:"result"}];
+
+function setMode(m){
+  mode=m;
+  restart();
+}
+function startWith(m){setMode(m);push({v:'q1'})}
+function setBar(p){$("bar").style.width=Math.round(p*100)+"%"}
+
+function render(){
+  const d=D(), step=path[path.length-1]||{v:"start"};
+  const S=seq(), total=d.items.length;
+  if(step.v==="start"){
+    setBar(0);
+    $("main").innerHTML=`<div class="screen hero">
+      <div class="big">📱</div>
+      <h2>わが家のスマホ・SNS<br>1分チェック</h2>
+      <div class="parts">
+        <div class="part m"><span class="pl">守る</span><div><b>大人が必ずやること</b><small>犯罪・大きな被害を、未然に防ぐ</small></div></div>
+        <div class="part s"><span class="pl">備える</span><div><b>家族で話し合っておくこと</b><small>起こりうるトラブルへの対応を決めておく</small></div></div>
+      </div>
+      <div class="pick">お子さんの学年を選んでスタート</div>
+      <div class="grades">
+        <button class="gbtn" onclick="startWith('l')">小学校<br><b>低学年</b><small>1〜3年</small></button>
+        <button class="gbtn" onclick="startWith('e')">小学校<br><b>高学年</b><small>4〜6年</small></button>
+        <button class="gbtn" onclick="startWith('j')"><br><b>中学生</b><small>1〜3年</small></button>
+      </div>
+      <div class="pnote">お子さんが2人以上いるときは、気になるお子さん1人について答えてください</div>
+    </div>`;
+    return;
+  }
+  if(step.v==="q1"){ setBar(.03); qScreen("",`Q1　｜　${d.label}`,d.q1.t,d.q1.h,"はい","いいえ","next()","push({v:'q1b'})"); return; }
+  if(step.v==="q1b"){ setBar(.5); qScreen("",`Q2`,d.q1b.t,d.q1b.h,"はい","いいえ","npAns(true)","npAns(false)"); return; }
+  if(step.v==="pq"){
+    const x=PREP[step.i];
+    setBar((step.i+2)/(PREP.length+2));
+    qScreen("p",`${step.i+3} / ${PREP.length+2}`,x.t,x.h,x.yl||"はい",x.nl||"まだ",`prepAns(${step.i},true)`,`prepAns(${step.i},false)`);
+    return;
+  }
+  if(step.v==="presult"){ setBar(1); presult(step.focus); return; }
+  if(step.v==="intro"){
+    const P=PART[step.p], no=step.p==="m"?"第1部":"第2部";
+    setBar(step.p==="m"?.05:(ofPart("m").length+1)/(total+2));
+    $("main").innerHTML=`<div class="screen intro ${step.p}">
+      <div class="no">${no}</div>
+      <div class="ttl">${P.name}</div>
+      <h2>${P.h}</h2>
+      <p>${P.p}</p>
+      <button class="btn go" onclick="next()">${P.sub}を確認する</button>
+      <div><button class="back" onclick="pop()">← ひとつ戻る</button></div>
+    </div>`;
+    return;
+  }
+  if(step.v==="q"){
+    const it=d.items.find(x=>x.k===step.k), list=ofPart(it.part), idx=list.indexOf(it), P=PART[it.part];
+    const done=d.items.indexOf(it)+(it.part==="s"?2:1);
+    setBar(done/(total+2));
+    qScreen(it.part,`${idx+1} / ${list.length}`,it.t,it.h,P.yes,P.no,`answer('${it.k}',true)`,`answer('${it.k}',false)`);
+    return;
+  }
+  if(step.v==="result"){ setBar(1); result(step.focus); }
+}
+function qScreen(part,no,t,h,yl,nl,yes,nn){
+  const pill=part?`<span class="pill ${part}">${part==="p"?"準備":PART[part].name}</span>`:"";
+  $("main").innerHTML=`<div class="screen" style="display:flex;flex-direction:column">
+    <div class="qno">${pill}${no}</div><div class="q">${t}</div>${h?`<div class="hint">${h}</div>`:""}
+    <div class="btns"><button class="btn y" onclick="${yes}">${yl}</button><button class="btn n" onclick="${nn}">${nl}</button></div>
+    <button class="back" onclick="pop()">← ひとつ戻る</button></div>`;
+}
+/* 次の画面へ（seq上で現在位置の次） */
+function next(){
+  const S=seq(), cur=path[path.length-1];
+  let i=-1;
+  if(cur && cur.v==="intro") i=S.findIndex(s=>s.v==="intro"&&s.p===cur.p);
+  else if(cur && cur.v==="q") i=S.findIndex(s=>s.v==="q"&&s.k===cur.k);
+  push({...S[i+1]});
+}
+function answer(k,v){ans[k]=v;next()}
+function npAns(v){ans.np=v;push({v:"pq",i:0})}
+function prepAns(i,v){ans[PREP[i].k]=v; push(i+1<PREP.length?{v:"pq",i:i+1}:{v:"presult"})}
+function presult(focus){
+  const list=prepScored(), ng=list.filter(x=>!ans[x.k]).map(x=>x.k), cur=focus||ng[0];
+  const chips=list.map(x=>ans[x.k]
+    ? `<span class="sh">✓ ${x.s}</span>`
+    : `<button class="sh ng ${x.k===cur?'cur':''}" onclick="setFocus('${x.k}')">✕ ${x.s}</button>`).join("");
+  const head=`<div class="rows"><div class="rrow p"><div class="rlab">準備<small>${list.length-ng.length} / ${list.length}</small></div><div class="chips">${chips}</div></div></div>
+    ${ng.length>1?`<div class="tip">まだの <b>${ng.length}つ</b> の準備を、下で順番に確認できます</div>`:''}`;
+  if(!cur){ card(D().nophone[ans.np?"yes":"no"],head,"p",false); return; }
+  card(list.find(x=>x.k===cur).adv,head,"p",cur===ng[0],navHtml(ng,cur));
+}
+function result(focus){
+  const d=D();
+  const ngM=ofPart("m").filter(x=>!ans[x.k]).map(x=>x.k);
+  const ngS=ofPart("s").filter(x=>!ans[x.k]).map(x=>x.k);
+  const cur=focus||ngM[0]||ngS[0];
+  const row=p=>{
+    const list=ofPart(p), ok=list.filter(x=>ans[x.k]).length;
+    const chips=list.map(x=>ans[x.k]
+      ? `<span class="sh">✓ ${x.s}</span>`
+      : `<button class="sh ng ${x.k===cur?'cur':''}" onclick="setFocus('${x.k}')">✕ ${x.s}</button>`).join("");
+    return `<div class="rrow ${p}"><div class="rlab">${PART[p].name}<small>${ok} / ${list.length}</small></div><div class="chips">${chips}</div></div>`;
+  };
+  const ng=[...ngM,...ngS];
+  const head=`<div class="rows">${row("m")}${row("s")}</div>
+    ${ng.length>1?`<div class="tip">できていない <b>${ng.length}つ</b> の対策を、下で順番に確認できます</div>`:''}`;
+  if(!cur){
+    card({tag:"すばらしい！",t:"わが家の「守る」も「備える」も万全です",w:"ここまでできているご家庭は、ぜひ周りにも広げてください。",lead:"次のステップ",
+      a:["成長に合わせて、話し合いの内容を見直す","大人も食事中・会話中はスマホを置く","このチェックを、ほかの保護者にも紹介する"],n:""},head,"");
+    return;
+  }
+  const it=d.items.find(x=>x.k===cur);
+  const first = cur===(ngM[0]||ngS[0]);
+  card(it.adv,head,it.part,first,navHtml(ng,cur));
+}
+function setFocus(k){path[path.length-1].focus=k;render()}
+/* できていない項目を順番にめくるナビ */
+function navHtml(ng,cur){
+  if(ng.length<2) return "";
+  const i=ng.indexOf(cur), prev=ng[i-1], next=ng[i+1], left=ng.length-1-i;
+  return `<div class="nav">
+    <button class="pv" ${prev?`onclick="setFocus('${prev}')"`:"disabled"}>←</button>
+    <span class="cnt">${i+1} / ${ng.length}</span>
+    ${next?`<button class="nx" onclick="setFocus('${next}')">次の対策へ（あと${left}つ）→</button>`
+          :`<button class="nx done" onclick="setFocus('${ng[0]}')">最初の対策に戻る ↺</button>`}
+  </div>`;
+}
+function card(r,head,part,first,nav){
+  const pre = ({m:"守る｜",s:"備える｜",p:"準備｜"})[part]||"";
+  $("main").innerHTML=`<div class="screen">
+    ${head||""}
+    <div class="res ${part||""}">
+      <span class="tag">${first?"まずはここから｜":""}${pre}${r.tag}</span>
+      <h2>${r.t}</h2><p class="why">${r.w}</p>
+      ${r.lead?`<div class="lead">${r.lead}</div>`:""}
+      <ol>${r.a.map(x=>`<li><span>${x}</span></li>`).join("")}</ol>
+      ${r.n?`<div class="note">${r.n}</div>`:""}
+      ${nav||""}
+    </div>
+    ${formUrl()?`<a class="send" href="${formUrl()}" target="_blank" rel="noopener">📮 回答を送る（無記名・送信を押すだけ）</a>`:""}
+    <div class="row"><button class="sm" onclick="restart()">↺ もう一度</button><button class="sm" onclick="share()">🔗 リンクをコピー</button></div>
+  </div>`;
+}
+function push(s){path.push(s);render()}
+function pop(){path.pop();render()}
+function restart(){path=[];ans={};render()}
+function share(){
+  const fail=()=>toast("コピーできませんでした。画面上部のURLを共有してください");
+  try{navigator.clipboard.writeText(location.href).then(()=>toast("リンクをコピーしました"),fail)}catch(e){fail()}
+}
+function toast(msg){const t=$("toast");t.textContent=msg;t.classList.add("show");setTimeout(()=>t.classList.remove("show"),2200)}
+setMode("l");
+if("serviceWorker" in navigator){ window.addEventListener("load",()=>navigator.serviceWorker.register("sw.js").catch(()=>{})); }
+</script>
+</body>
+</html>
