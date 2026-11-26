@@ -6,8 +6,8 @@
 <meta name="theme-color" content="#b8432f">
 <meta name="description" content="はい・いいえで答えるだけ。わが家のスマホ・SNSの「守る」「備える」がわかる1分チェック">
 <link rel="manifest" href="manifest.webmanifest">
-<link rel="icon" href="icons/icon-192.png">
-<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<link rel="icon" href="/sumaho-check/icons/icon-192.png">
+<link rel="apple-touch-icon" href="/sumaho-check/icons/apple-touch-icon.png">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="スマホチェック">
 <title>わが家のスマホ・SNS 1分チェック</title>
@@ -332,8 +332,11 @@ const FORM = {
     post:"768642993", leak:"506667378", consult:"1982992710"
   }
 };
-/* お試しモード：URLの末尾に ?demo を付けると回答を送信しない（市の担当者などの試用向け） */
-const DEMO = (()=>{ try{ return new URLSearchParams(location.search).has("demo"); }catch(e){ return false; } })();
+/* β版：/beta/ に置いたものは回答を送信しない（市の担当者・モニター保護者向け）
+   お試しモード：公開版のURLの末尾に ?demo を付けても回答を送信しない
+   ※公開版と β版は同じ index.html。β版で確認できたら、そのまま公開版にコピーする */
+const BETA = (()=>{ try{ return /\/beta\//.test(location.pathname); }catch(e){ return false; } })();
+const DEMO = BETA || (()=>{ try{ return new URLSearchParams(location.search).has("demo"); }catch(e){ return false; } })();
 /* 回答をGoogleフォームに裏側で送信（フォーム画面は開かない） */
 let sent=false;
 function sendAnswers(btn){
@@ -505,7 +508,7 @@ function card(r,head,part,first,nav){
       ${r.n?`<div class="note">${r.n}</div>`:""}
       ${nav||""}
     </div>
-    ${DEMO?`<div class="send demo">お試しモード：回答は送信されません</div>`:formUrl()?(sent
+    ${DEMO?`<div class="send demo">${BETA?"β版":"お試しモード"}：回答は送信されません</div>`:formUrl()?(sent
       ? `<div class="send done">✓ 送信しました。ご協力ありがとうございます</div>
          <a class="opinion" href="${formUrl()}" target="_blank" rel="noopener">ご意見・わかりにくかった点を書く（任意）</a>`
       : `<button class="send" onclick="sendAnswers(this)">📮 回答を送る（無記名・ワンタップ）</button>`):""}
@@ -521,8 +524,8 @@ function share(){
 }
 function toast(msg){const t=$("toast");t.textContent=msg;t.classList.add("show");setTimeout(()=>t.classList.remove("show"),2200)}
 setMode("l");
-if(DEMO){ document.querySelector("header h1").insertAdjacentHTML("beforeend",'<span class="demo-tag">お試し</span>'); }
-if("serviceWorker" in navigator){ window.addEventListener("load",()=>navigator.serviceWorker.register("sw.js").catch(()=>{})); }
+if(DEMO){ document.querySelector("header h1").insertAdjacentHTML("beforeend",`<span class="demo-tag">${BETA?"β版":"お試し"}</span>`); }
+if(!BETA && "serviceWorker" in navigator){ window.addEventListener("load",()=>navigator.serviceWorker.register("sw.js").catch(()=>{})); }
 </script>
 </body>
 </html>
