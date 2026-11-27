@@ -1,6 +1,6 @@
 // オフラインでも開けるようにするための最小限のService Worker
 // アプリを更新したら VERSION の数字を上げる
-const VERSION = "v6";
+const VERSION = "v7";
 const CACHE = "sumaho-check-" + VERSION;
 const FILES = ["./", "index.html", "manifest.webmanifest", "icons/icon-192.png", "icons/icon-512.png", "icons/maskable-512.png", "icons/apple-touch-icon.png"];
 
